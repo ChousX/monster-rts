@@ -1,57 +1,58 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, transform};
+use noise::{OpenSimplex, NoiseFn, Seedable};
+
 use crate::map::{
-    tile::{Tile, TILE_SIZE}, 
+    tile::{Tile, TileSize}, 
     Seed,
     map_atlas::MapTextureAtlasHandles
 };
-use noise::{OpenSimplex, NoiseFn, Seedable};
+
+
+use super::tile;
 
 pub const CHUNK_SIZE: (usize, usize) = (10, 10);
-#[derive(Component)]
-pub struct Chunk(pub [[Entity; CHUNK_SIZE.0]; CHUNK_SIZE.1]);
 
 #[derive(Component)]
-pub struct ChunkPos(f64, f64);
+pub struct Chunk;
+pub fn make_chunk(
+    commands: &mut Commands,
+    chunk_pos: (usize, usize),
+    atlas_handles: &Res<MapTextureAtlasHandles>,
+    seed: u32,
+    tile_size: f32
+){
+    let transform = Transform::from_xyz(
+        chunk_pos.0 as f32 * tile_size * CHUNK_SIZE.0 as f32,
+        chunk_pos.1 as f32 * tile_size * CHUNK_SIZE.1 as f32,
+        1.0
+    );
+    
+    let chunk = commands
+        .spawn()
+        .insert_bundle(TransformBundle::from_transform(transform))
+        .insert(Chunk)
+        .id();
 
-impl Chunk {
-    pub fn new(commands: &mut Commands, chunk_pos: (usize, usize), seed: u32, atlas_handles: &Res<MapTextureAtlasHandles>) -> Self{
-        let zero_zero: (f64, f64) = (
-            (chunk_pos.0 * CHUNK_SIZE.0) as f64 * TILE_SIZE.0,
-            (chunk_pos.1 * CHUNK_SIZE.1) as f64 * TILE_SIZE.1
+    let mut noise = OpenSimplex::new();
+    noise.set_seed(seed);
 
-        );
-        //if any thing goes wrong i am checking this 
-        let mut chunk: [[Entity; CHUNK_SIZE.0]; CHUNK_SIZE.1] = unsafe {
-            let mut arr: [[Entity; CHUNK_SIZE.0]; CHUNK_SIZE.1] = std::mem::uninitialized();
-            let mut noise = OpenSimplex::new();
-            noise.set_seed(seed);
-            for (y, row) in &mut arr[..].iter_mut().enumerate() {
-                let y_pos: f64 = y as f64 * TILE_SIZE.1 + zero_zero.1;
-                for (x, entry) in &mut row[..].iter_mut().enumerate(){
-                    let x_pos = x as f64 * TILE_SIZE.0 + zero_zero.0;
-                    let val = noise.get([
-                        x_pos,
-                        y_pos
-                    ]);
-                    let tile = Tile::from(val);
-                    let sprite = tile.get_sprite(
-                        &atlas_handles.tile_handles,
-                        &atlas_handles.handle,
-                        Vec3::new(x_pos as f32 , y_pos as f32, 1.0)
-                    );
-                    let entity = commands
-                        .spawn_bundle(sprite)
-                        .insert(tile)
-                        .id();
-                    std::ptr::write(entry, entity);
-                }
-            }
-            arr
-        };
+    for y in 0..CHUNK_SIZE.1{
+        let f32_y = y as f32 * tile_size;
+        for x in 0..CHUNK_SIZE.0{
+            let f32_x = x as f32 * tile_size;
+            let val = noise.get([f32_x as f64, f32_y as f64]);
+            let tile = Tile::from(val);
+            let sprite = tile.get_sprite(
+                &atlas_handles.tile_handles, 
+                &atlas_handles.handle, 
+                Vec3::new(f32_x, f32_y, 1.0), 
+                tile_size);
 
-        Self(chunk)
+            let tile_id = commands
+                .spawn_bundle(sprite)
+                .insert(tile)
+                .id(); 
+            commands.entity(chunk).push_children(&[tile_id]);
+        }
     }
 }
-
-
-

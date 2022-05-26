@@ -2,6 +2,8 @@ use bevy::{prelude::*, render::camera::ScalingMode};
 use rand::prelude::*;
 use crate::share::{GameState, RESOLUTION, asset_load_checker, add_camera};
 
+use crate::map::tile::TileSize;
+
 mod map_atlas;
 mod chunk;
 mod tile;
@@ -24,6 +26,7 @@ pub struct Seed(u32);
 
 pub fn init(mut commands: Commands){
     commands.insert_resource(Seed(thread_rng().gen()));
+    commands.init_resource::<tile::TileSize>();
 }
 
 
@@ -39,10 +42,22 @@ pub fn init_map_settings(mut commands: Commands){
     if cfg!(debug_assertions){println!("MapSettings: Inited")}
 }
 
-pub fn build_map(mut commands: Commands,  settings: Res<MapSettings>, seed: Res<Seed>, atlas_handles: Res<map_atlas::MapTextureAtlasHandles>){
+pub fn build_map(
+    mut commands: Commands,  
+    settings: Res<MapSettings>, 
+    seed: Res<Seed>, 
+    atlas_handles: Res<map_atlas::MapTextureAtlasHandles>, 
+    tile_size: Res<TileSize>
+){
     for chunk_y in 0..settings.size.1{
         for chunk_X in 0..settings.size.0{
-            let chunk = chunk::Chunk::new(&mut commands, (chunk_X, chunk_y), seed.0, &atlas_handles);
+            chunk::make_chunk(
+                &mut commands, 
+                (chunk_X, chunk_y), 
+                &atlas_handles, 
+                seed.0, 
+                tile_size.0
+            );
         }
     }
     if cfg!(debug_assertions){println!("Map Built")}
