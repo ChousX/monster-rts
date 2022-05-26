@@ -2,6 +2,11 @@ use bevy::prelude::*;
 
 type Key = Vec<KeyCode>;
 pub struct KeyBindings{
+    //Modifers 
+    pub alpha: Key, 
+    pub beta: Key, 
+    pub gamma: Key, 
+    pub delta: Key,
     //Camra
     //movment
     pub move_left: Key,
@@ -18,7 +23,13 @@ pub struct KeyBindings{
 impl Default for KeyBindings{
     fn default() -> Self {
         use KeyCode::*;
-        Self { 
+        Self {
+            //Modifers 
+            alpha: vec![RShift, LShift],
+            beta: vec![RAlt, LAlt],
+            gamma: vec![],
+            delta: vec![],
+            //Camra
             move_left: vec![A, Left], 
             move_right: vec![D, Right], 
             move_up: vec![W, Up], 
