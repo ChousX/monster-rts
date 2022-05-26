@@ -1,7 +1,10 @@
 use bevy::{prelude::*};
 
 #[derive(Component, Clone, Copy)]
-pub struct MainMapView;   
+pub struct MapView{
+    pub speed: f32
+}
+
 //adding a camera 
 pub fn add_camera(mut commands: Commands){
     let mut camera = OrthographicCameraBundle::new_2d();
@@ -18,11 +21,8 @@ pub fn add_camera(mut commands: Commands){
     */
     commands
     .spawn_bundle(camera)
-    .insert(MainMapView);
-    if cfg!(debug_assertions){println!("Camrea Added")}
-}
-
-pub struct MapCamraSpeed(pub f32);
-pub fn add_camera_speed(mut commands: Commands){
-    commands.insert_resource(MapCamraSpeed(1.5));
+    .insert(MapView{
+        speed: 1.5
+    });
+    
 }

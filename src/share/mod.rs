@@ -5,7 +5,7 @@ mod camera;
 pub use menu::*;
 pub use game_state::GameState;
 pub use asset_checker::{AssetChecker, init as asset_checker_init, check as asset_load_checker};
-pub use camera::{add_camera, add_camera_speed, MapCamraSpeed, MainMapView};
+pub use camera::{add_camera, MapView};
 
 pub const RESOLUTION: f32 = 1080.0;
 
