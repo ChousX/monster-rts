@@ -34,8 +34,8 @@ impl Default for KeyBindings{
             move_right: vec![D, Right], 
             move_up: vec![W, Up], 
             move_down: vec![S, Down],
-            zoom_in: vec![], 
-            zoom_out: vec![] 
+            zoom_in: vec![K], 
+            zoom_out: vec![L] 
         }
     }
 }

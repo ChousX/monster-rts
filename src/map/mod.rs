@@ -14,8 +14,7 @@ impl Plugin for MapPlugin{
         app
             .add_plugin(TilemapPlugin)
             .add_system_set(SystemSet::on_enter(GameState::MainGame).with_system(start_up_map))
-            .add_system_set(SystemSet::on_enter(GameState::MainGame).with_system(add_camera))
-            .add_system_set(SystemSet::on_enter(GameState::MainGame).with_system(add_camera))
+            //.add_system_set(SystemSet::on_enter(GameState::MainGame).with_system())
             .add_system(texture::set_texture_filters_to_nearest)
             .add_system_set(SystemSet::on_enter(GameState::GameMenu).with_system(pre_start_up));
     }
@@ -33,9 +32,7 @@ impl Default for MyMapSettings{
     }
 }
 
-pub fn add_camera(mut commands: Commands){
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-}
+
 
 pub fn pre_start_up(
     mut commands: Commands,
