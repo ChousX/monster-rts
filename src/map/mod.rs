@@ -3,7 +3,13 @@ use bevy_ecs_tilemap::prelude::*;
 use rand::{thread_rng, Rng};
 
 mod texture;
-use crate::share::{GameState, AssetChecker};
+use crate::share::{GameState, AssetChecker, range_mapping};
+use noise::{OpenSimplex, NoiseFn, Seedable};
+
+pub const TILE_SIZE: (f32, f32) = (64.0, 32.0);
+pub const CHUNK_SIZE: (u32, u32) = (16, 32);
+
+
 
 #[derive(Default)]
 pub struct MapTexterHandle(pub Handle<Image>);
@@ -14,20 +20,22 @@ impl Plugin for MapPlugin{
         app
             .add_plugin(TilemapPlugin)
             .add_system_set(SystemSet::on_enter(GameState::MainGame).with_system(start_up_map))
-            //.add_system_set(SystemSet::on_enter(GameState::MainGame).with_system())
+            
             .add_system(texture::set_texture_filters_to_nearest)
             .add_system_set(SystemSet::on_enter(GameState::GameMenu).with_system(pre_start_up));
     }
 }
 
 pub struct MyMapSettings{
-    pub map_size: MapSize
+    pub map_size: MapSize,
+    pub seed: u32,
 }
 
 impl Default for MyMapSettings{
     fn default() -> Self {
         Self{
-            map_size: MapSize(2, 2)
+            map_size: MapSize(10, 10),
+            seed: 0,
         }
     }
 }
@@ -62,45 +70,41 @@ pub fn start_up_map(
     
     let mut settings = LayerSettings::new(
         map_settings.map_size,
-        ChunkSize(16, 32),
-        TileSize(64.0, 32.0),
+        ChunkSize(CHUNK_SIZE.0, CHUNK_SIZE.1),
+        TileSize(TILE_SIZE.0, TILE_SIZE.1),
         TextureSize(384.0, 32.0),
     );
     settings.mesh_type = TilemapMeshType::Isometric(IsoType::Staggered);
 
     let (mut layer, later_entity) = 
         LayerBuilder::<TileBundle>::new(&mut commands, settings.clone(), 0u16, 0u16);
-    layer.set_all(
-        Tile {
-            texture_index: 1,
-            ..Default::default()
-        }.into()
-    );
-// Make 2 layers on "top" of the base map.
-// for z in 0..5 {
-//     let (mut layer_builder, layer_entity) =
-//         LayerBuilder::new(&mut commands, settings.clone(), 0u16, z + 1);
-//     map.add_layer(&mut commands, z + 1, layer_entity);
 
-//     let mut random = thread_rng();
+    //so if you dont do this then there are no tiles to iter over
+    layer.set_all(Tile{
+        texture_index: 0,
+        ..Default::default()
+    }.into());
+    let mut noise = OpenSimplex::new();
+    noise.set_seed(map_settings.seed);
 
-//     for _ in 0..1000 {
-//         let position = TilePos(random.gen_range(0..128), random.gen_range(0..128));
-//         // Ignore errors for demo sake.
-//         let _ = layer_builder.set_tile(
-//             position,
-//             TileBundle {
-//                 tile: Tile {
-//                     texture_index: 0 + z + 1,
-//                     ..Default::default()
-//                 },
-//                 ..Default::default()
-//             },
-//         );
-//     }
+    let mut x = 0;
+    let mut y: u32 = 0;
+    layer.for_each_tiles_mut(|entity, tile_bundle|{
+        if let Some(tile_bundle) = tile_bundle{
+            let val = noise.get([x as f64, y as f64]);
+            let index = range_mapping((-1.0, 1.0), (0.0, 5.0), val) as u16;
+            
+            tile_bundle.tile.texture_index = index;
+        }
+        if x > settings.map_size.0 * settings.chunk_size.0{
+            x = 0;
+            y += 1;
+        } else {
+            x += 1;
+        }
+    });
 
-//     map_query.build_layer(&mut commands, layer_builder, texture_handle.0.clone());
-//     }
+
     map_query.build_layer(&mut commands, layer, texture_handle.0.clone());
     commands
         .entity(map_entity)
