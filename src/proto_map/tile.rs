@@ -51,7 +51,7 @@ impl Tile{
             texture_atlas: atlas_handle.clone(), 
             transform: Transform {
                 translation: pos,
-                scale: Vec3::new(tile_size, tile_size, 1.0),
+                scale: Vec3::splat(tile_size),
                 ..default()
             }, 
             ..Default::default()

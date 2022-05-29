@@ -5,8 +5,16 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
 [dependencies]
-bevy = "0.7.0"
+# remove ["dynamic"] when shipping
+bevy = { version = "0.7.0", features = ["dynamic"] }
+bevy_ecs_tilemap = "0.6"
 bevy-inspector-egui = "0.10.0"
 rand = "0.8.5"
 noise = "0.7.0"

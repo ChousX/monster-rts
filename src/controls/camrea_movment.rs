@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::controls::KeyBindings;
 use crate::share::{MapView};
+use crate::map::TileSize;
 
 
 //TODO: look in to a more extendable and elegant selution 
@@ -10,6 +11,7 @@ pub fn move_camra_keyboard(
     keyboard: Res<Input<KeyCode>>,
     key_bindings: Res<KeyBindings>,
     time: Res<Time>,
+    tile_size: Res<TileSize>,
 ){
     let (map_view, mut transform) = map_view.single_mut();
     let speed = map_view.speed;
@@ -58,20 +60,20 @@ pub fn move_camra_keyboard(
     //Left
     for key in key_bindings.move_left.iter(){
         if keyboard.pressed(*key){
-            transform.translation.x += speed * time.delta_seconds();
+            transform.translation.x += speed * time.delta_seconds() * tile_size.0;
         }
     }
     //Right
     for key in key_bindings.move_right.iter(){
         if keyboard.pressed(*key){
-            transform.translation.x -= speed * time.delta_seconds();
+            transform.translation.x -= speed * time.delta_seconds() * tile_size.0;
 
         }
     }
     //Up
     for key in key_bindings.move_up.iter(){
         if keyboard.pressed(*key){
-            transform.translation.y -= speed * time.delta_seconds();
+            transform.translation.y += speed * time.delta_seconds() * tile_size.0;
 
         }
     }
@@ -79,7 +81,7 @@ pub fn move_camra_keyboard(
     for key in key_bindings.move_down.iter(){
         if keyboard.pressed(*key){
             
-            transform.translation.y += speed * time.delta_seconds();
+            transform.translation.y -= speed * time.delta_seconds() * tile_size.0;
         }
     }
 }

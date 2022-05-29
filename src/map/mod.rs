@@ -1,64 +1,62 @@
-use bevy::{prelude::*, render::camera::ScalingMode};
-use rand::prelude::*;
-use crate::share::{GameState, RESOLUTION, asset_load_checker, add_camera};
+use bevy::prelude::*;
+use bevy_ecs_tilemap::prelude::*;
+use rand::{thread_rng, Rng};
 
-use crate::map::tile::TileSize;
+use crate::share::{GameState, AssetChecker};
 
-mod map_atlas;
-mod chunk;
-mod tile;
+pub struct MapTexterHandle(pub Handle<Image>);
 
 pub struct MapPlugin;
 impl Plugin for MapPlugin{
     fn build(&self, app: &mut App) {
         app
-            .add_system_set(SystemSet::on_enter(GameState::GameLoad).with_system(asset_load_checker))
-            .add_system_set(SystemSet::on_exit(GameState::GameLoad).with_system(map_atlas::init_texture_atlas))
-            .add_system_set(SystemSet::on_enter(GameState::MainMenu).with_system(map_atlas::load_atlas_textures))
-            .add_system_set(SystemSet::on_enter(GameState::MainMenu).with_system(init))
-            .add_system_set(SystemSet::on_exit(GameState::GameLoad).with_system(add_camera))
-            .add_system_set(SystemSet::on_enter(GameState::MainGame).with_system(build_map))
-            .add_system_set(SystemSet::on_enter(GameState::GameMenu).with_system(init_map_settings))
-            ;
+            .add_startup_system(pre_start_up)
+            .add_system_set(SystemSet::on_enter(GameState::MainGame).with_system(start_up_map));
     }
 }
-pub struct Seed(u32);
 
-pub fn init(mut commands: Commands){
-    commands.insert_resource(Seed(thread_rng().gen()));
-    commands.init_resource::<tile::TileSize>();
+pub struct MyMapSettings{
+    pub map_size: MapSize
 }
 
-
-
-pub struct MapSettings{
-    pub size: (usize, usize)
-}
-
-pub fn init_map_settings(mut commands: Commands){
-    commands.insert_resource(MapSettings{
-        size: (2, 2)
-    });
-    if cfg!(debug_assertions){println!("MapSettings: Inited")}
-}
-
-pub fn build_map(
-    mut commands: Commands,  
-    settings: Res<MapSettings>, 
-    seed: Res<Seed>, 
-    atlas_handles: Res<map_atlas::MapTextureAtlasHandles>, 
-    tile_size: Res<TileSize>
-){
-    for chunk_y in 0..settings.size.1{
-        for chunk_X in 0..settings.size.0{
-            chunk::make_chunk(
-                &mut commands, 
-                (chunk_X, chunk_y), 
-                &atlas_handles, 
-                seed.0, 
-                tile_size.0
-            );
+impl Default for MyMapSettings{
+    fn default() -> Self {
+        Self{
+            map_size: MapSize(2, 2)
         }
     }
-    if cfg!(debug_assertions){println!("Map Built")}
+}
+
+pub fn pre_start_up(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    checker: Res<AssetChecker>
+){
+    let handle: Handle<Image> = asset_server.load(r"textures/iso_color.png");
+
+    checker.0.push(handle.clone_untyped());
+
+
+
+    commands.insert_resource(MyMapSettings::default());
+    commands.insert_resource(handle);
+}
+
+pub fn start_up_map(
+    mut commands: Commands, 
+    texture_handle: Res<MapTexterHandle>,
+    mut map_query: MapQuery,
+    map_settings: Res<MyMapSettings>
+){
+    //making a new entity to store map stuff
+    let map_entity = commands.spawn().id();
+    let mut map = Map::new(0u16, map_entity);
+    
+    let settings = LayerSettings::new(
+        map_settings.map_size,
+        ChunkSize(16, 32),
+        TileSize(64.0, 32.0),
+        TextureSize(384.0, 32.0),
+    );
+
 }
