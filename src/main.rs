@@ -16,6 +16,7 @@ fn main(){
         .add_plugins(DefaultPlugins)
         .add_startup_system(ui_cam_init)
         .add_startup_system(share::asset_checker_init)
+        .add_system_set(SystemSet::on_enter(GameState::GameLoad).with_system(share::asset_load_checker))
         .add_state(GameState::MainMenu)
         .add_plugin(main_menu::MainMenuPlugin)
         .add_plugin(debug::DebugPlugin)
