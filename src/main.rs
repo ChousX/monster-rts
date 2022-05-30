@@ -9,6 +9,7 @@ mod main_menu;
 mod hud;
 mod controls;
 mod camera;
+mod pause;
 
 use share::GameState;
 
