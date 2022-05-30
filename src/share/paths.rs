@@ -1,2 +1,2 @@
-pub const MAP_ISO: &str = if cfg!(target_os = "linux") {r"textures/"} else {r"textures\"};
-pub const FONT: &str = if cgf!(target_os = "linux") {r""} else {r""};
+pub const MAP_ISO: &str = if cfg!(target_os = "windows") {r"textures\iso_color.png"} else {r"textures/iso_color.png"};
+pub const FONT: &str = if cfg!(target_os = "windows") {r"fonts\OpenDyslexicMono-Regular.otf"} else {r"fonts/OpenDyslexicMono-Regular.otf"};

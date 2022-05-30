@@ -49,7 +49,7 @@ pub fn pre_start_up(
     asset_server: Res<AssetServer>,
     mut checker:  ResMut<AssetChecker>
 ){
-    let handle: Handle<Image> = asset_server.load(r"textures/iso_color.png");
+    let handle: Handle<Image> = asset_server.load(crate::share::paths::MAP_ISO);
     let un_ref = handle.clone_untyped();
     checker.0.push(un_ref);
 

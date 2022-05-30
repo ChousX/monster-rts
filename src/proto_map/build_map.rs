@@ -23,7 +23,7 @@ pub fn build_map(
 ){
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     println!("111");
-    let texture_handle = asset_server.load(r"textures/iso_color.png");
+    let texture_handle = asset_server.load(crate::share::paths::FONT);
 
     let map_entity = commands.spawn().id();
     let mut map = Map::new(0u16, map_entity);
