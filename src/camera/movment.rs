@@ -1,12 +1,12 @@
 use bevy::prelude::*;
-
-pub struct CamraMoveEvent{
+use crate::controls::LeftStickEvent;
+pub struct CameraMoveEvent{
     pub inputs: [bool; 6]
 }
 
-pub fn move_camra(
+pub fn move_camera(
     mut query: Query<(&mut Transform, &mut OrthographicProjection), With<Camera>>, 
-    mut move_event: EventReader<CamraMoveEvent>,
+    mut move_event: EventReader<CameraMoveEvent>,
     time: Res<Time>,
 ){
     for event in move_event.iter(){
@@ -43,6 +43,23 @@ pub fn move_camra(
             }
 
             let z = transform.translation.z; // keep the z
+            transform.translation += time.delta_seconds() * direction * 500.;
+            transform.translation.z = z;
+        }
+    }
+}
+
+pub fn move_camera_gamepad(
+    mut query: Query<(&mut Transform, &mut OrthographicProjection), With<Camera>>, 
+    mut move_event: EventReader<LeftStickEvent>,
+    time: Res<Time>,
+){
+    for event in move_event.iter(){
+        for (mut transform, mut ortho) in query.iter_mut() {
+            let mut direction = Vec3::ZERO;
+            direction.x += event.0.x;
+            direction.y += event.0.y;
+            let z = transform.translation.z;
             transform.translation += time.delta_seconds() * direction * 500.;
             transform.translation.z = z;
         }

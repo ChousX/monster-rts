@@ -2,11 +2,11 @@ use bevy::prelude::*;
 use bevy::app::AppExit;
 
 use crate::controls::KeyBindings;
-use crate::camera::CamraMoveEvent;
+use crate::camera::CameraMoveEvent;
 pub fn keyboard_input_ingest(
     keyboard: Res<Input<KeyCode>>,
     key_bindings: Res<KeyBindings>,
-    mut camera_move_event: EventWriter<CamraMoveEvent>,
+    mut camera_move_event: EventWriter<CameraMoveEvent>,
     mut exit: EventWriter<AppExit>,
 ){
     //camera
@@ -54,7 +54,7 @@ pub fn keyboard_input_ingest(
                 break;
             }
         }
-        camera_move_event.send(CamraMoveEvent{
+        camera_move_event.send(CameraMoveEvent{
             inputs
         });    
     }
@@ -68,7 +68,10 @@ pub fn keyboard_input_ingest(
 
 }
 
-pub struct GamepadHolder(Gamepad);
+pub struct GamepadHolder(pub Gamepad);
+
+pub struct RightStickEvent(pub Vec2);
+pub struct LeftStickEvent(pub Vec2);
 
 pub fn gamepad_connections(
     mut commands: Commands,
@@ -98,6 +101,8 @@ pub fn gamepad_input(
     axes: Res<Axis<GamepadAxis>>,
     buttons: Res<Input<GamepadButton>>,
     gamepad: Option<Res<GamepadHolder>>,
+    mut right_stick_event: EventWriter<RightStickEvent>,
+    mut left_stick_event: EventWriter<LeftStickEvent>,
 ){
     let gamepad = if let Some(gp) = gamepad {
         // a gamepad is connected, we have the id
@@ -115,22 +120,17 @@ pub fn gamepad_input(
     if let (Some(x), Some(y)) = (axes.get(axis_lx), axes.get(axis_ly)){
         // combine X and Y into one vector
         let left_stick_pos = Vec2::new(x, y);
-
-        if left_stick_pos.length() > 0.9 && left_stick_pos.y > 0.5 {
-            // do something
-        }
+        left_stick_event.send(LeftStickEvent(left_stick_pos));
     }
 
     let axis_rx = GamepadAxis(gamepad, GamepadAxisType::RightStickX);
     let axis_ry = GamepadAxis(gamepad, GamepadAxisType::RightStickY);
 
     if let (Some(x), Some(y)) = (axes.get(axis_rx), axes.get(axis_ry)){
+        println!("{}|{}", x, y);
         // combine X and Y into one vector
         let right_stick_pos = Vec2::new(x, y);
-
-        if right_stick_pos.length() > 0.9 && right_stick_pos.y > 0.5 {
-            // do something
-        }
+        right_stick_event.send(RightStickEvent(right_stick_pos));
     }
 
     let jump_button = GamepadButton(gamepad, GamepadButtonType::South);
