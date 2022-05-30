@@ -3,6 +3,8 @@ use bevy_ecs_tilemap::prelude::*;
 use rand::{thread_rng, Rng};
 
 mod texture;
+mod tile_tpye;
+use crate::map::tile_tpye::TileType;
 use crate::share::{GameState, AssetChecker, range_mapping};
 use noise::{OpenSimplex, NoiseFn, Seedable};
 
@@ -64,6 +66,7 @@ pub fn start_up_map(
     map_settings: Res<MyMapSettings>
 ){
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+
     //making a new entity to store map stuff
     let map_entity = commands.spawn().id();
     let mut map = Map::new(0u16, map_entity);
@@ -76,7 +79,7 @@ pub fn start_up_map(
     );
     settings.mesh_type = TilemapMeshType::Isometric(IsoType::Staggered);
 
-    let (mut layer, later_entity) = 
+    let (mut layer, _layer_entity) = 
         LayerBuilder::<TileBundle>::new(&mut commands, settings.clone(), 0u16, 0u16);
 
     //so if you dont do this then there are no tiles to iter over
@@ -84,6 +87,7 @@ pub fn start_up_map(
         texture_index: 0,
         ..Default::default()
     }.into());
+
     let mut noise = OpenSimplex::new();
     noise.set_seed(map_settings.seed);
 
@@ -94,6 +98,10 @@ pub fn start_up_map(
             let val = noise.get([x as f64, y as f64]);
             let index = range_mapping((-1.0, 1.0), (0.0, 5.0), val) as u16;
             
+            if let Some(entity) = entity{
+                commands.entity(*entity).insert(TileType::from(index));
+            }
+
             tile_bundle.tile.texture_index = index;
         }
         if x > settings.map_size.0 * settings.chunk_size.0{
