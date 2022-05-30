@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-pub const DEFAULT_FONT: &str = r"fonts\OpenDyslexicMono-Regular.otf";
+
 
 pub const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 pub const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);

@@ -3,6 +3,8 @@ use bevy::app::AppExit;
 
 use crate::controls::KeyBindings;
 use crate::camera::CameraMoveEvent;
+
+
 pub fn keyboard_input_ingest(
     keyboard: Res<Input<KeyCode>>,
     key_bindings: Res<KeyBindings>,
