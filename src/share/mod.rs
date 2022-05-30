@@ -1,7 +1,7 @@
 mod game_state;
 mod asset_checker;
 mod menu;
-
+pub mod paths;
 
 
 //mod camera;
