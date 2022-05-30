@@ -1,10 +1,13 @@
 use bevy::prelude::*;
+use bevy::app::AppExit;
+
 use crate::controls::KeyBindings;
 use crate::camera::CamraMoveEvent;
 pub fn keyboard_input_ingest(
     keyboard: Res<Input<KeyCode>>,
     key_bindings: Res<KeyBindings>,
     mut camera_move_event: EventWriter<CamraMoveEvent>,
+    mut exit: EventWriter<AppExit>,
 ){
     {  
         let mut inputs = [false;6];
@@ -53,6 +56,13 @@ pub fn keyboard_input_ingest(
         camera_move_event.send(CamraMoveEvent{
             inputs
         });    
+    }
+
+    for key in key_bindings.escape.iter(){
+        if keyboard.pressed(*key){
+            //for now idk
+            exit.send(AppExit);
+        }
     }
 
 }

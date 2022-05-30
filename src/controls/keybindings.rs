@@ -18,6 +18,8 @@ pub struct KeyBindings{
     //zoom
     pub zoom_in: Key,
     pub zoom_out: Key,
+
+    pub escape: Key 
 }
 
 impl Default for KeyBindings{
@@ -35,7 +37,9 @@ impl Default for KeyBindings{
             move_up: vec![W, Up], 
             move_down: vec![S, Down],
             zoom_in: vec![K], 
-            zoom_out: vec![L] 
+            zoom_out: vec![L],
+            
+            escape: vec![Escape],
         }
     }
 }

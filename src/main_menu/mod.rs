@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy::app::AppExit;
-use crate::share::{GameState, Menu, PRESSED_BUTTON, HOVERED_BUTTON, NORMAL_BUTTON, DEFAULT_FONT};
+use crate::share::{GameState, Menu, PRESSED_BUTTON, HOVERED_BUTTON, NORMAL_BUTTON, paths::FONT};
 
 mod game_menu;
 pub struct DeleteList([Entity; 3]);
@@ -22,9 +22,9 @@ impl Menu for MainMenu{
     }
 
     fn build( commands: &mut Commands, asset_server: Res<AssetServer>){
-        let quite = Self::Quit.to_button(commands, asset_server.load(DEFAULT_FONT));
-        let play = Self::Play.to_button(commands, asset_server.load(DEFAULT_FONT));
-        let settings = Self::Settings.to_button(commands, asset_server.load(DEFAULT_FONT));
+        let quite = Self::Quit.to_button(commands, asset_server.load(FONT));
+        let play = Self::Play.to_button(commands, asset_server.load(FONT));
+        let settings = Self::Settings.to_button(commands, asset_server.load(FONT));
         commands.insert_resource(DeleteList([quite, play, settings]));
     }
 }
