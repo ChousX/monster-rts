@@ -63,10 +63,8 @@ pub fn move_cursor_mouse(
     mut cursor_evr: EventReader<CursorMoved>,
     window: Res<Windows>,
 ){
-    let offset = {
-        let window = window.get_primary().unwrap();
-        (window.width() * 0.5, window.height() * 0.5)
-    };
+    let window = window.get_primary().unwrap();
+    let offset = (window.width() * 0.5, window.height() * 0.5);
 
     for (_, mut transform) in cursor_quere.iter_mut(){
         for  last_pos in  cursor_evr.iter(){
@@ -74,14 +72,40 @@ pub fn move_cursor_mouse(
             transform.translation.y = last_pos.position.y - offset.1;
         }
     }
-
-
-
 }
 
 pub fn move_cursor_gamepad(
-    cursor_quere: Query<(&Cursor, &mut Transform)>,
-    mut right_stick: EventReader<RightStickEvent>
+    mut cursor_quere: Query<(&Cursor, &mut Transform)>,
+    mut right_stick: EventReader<RightStickEvent>,
+    window: Res<Windows>,
+    time: Res<Time>,
 ){
-    //TODO:
+    let (width, height) = {
+        let window = window.get_primary().unwrap();
+        (window.width() * 0.5, window.height() * 0.5)
+    };
+    for event in right_stick.iter(){
+        for (_, mut transform) in cursor_quere.iter_mut(){
+            let mut direction = Vec3::ZERO;
+            direction.x += event.0.x;
+            direction.y += event.0.y;
+            let z = transform.translation.z;
+            transform.translation += time.delta_seconds() * direction * 500.;
+            transform.translation.z = z;
+
+            //preventing cursor form leaving the screen
+            if transform.translation.x > width{
+                transform.translation.x = width;
+            }
+            if transform.translation.y > height{
+                transform.translation.y = height;
+            } 
+            if transform.translation.x < -width{
+                transform.translation.x = -width;
+            }
+            if transform.translation.y < -height{
+                transform.translation.y = -height;
+            }
+        }
+    }
 }

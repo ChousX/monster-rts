@@ -140,45 +140,4 @@ pub fn gamepad_input(
     if buttons.just_pressed(jump_button) {
         // button just pressed: make the player jump
     }
-
 }
-
-/*
-fn gamepad_input_events(
-    my_gamepad: Option<Res<MyGamepad>>,
-    mut gamepad_evr: EventReader<GamepadEvent>,
-) {
-    let gamepad = if let Some(gp) = my_gamepad {
-        // a gamepad is connected, we have the id
-        gp.0
-    } else {
-        // no gamepad is connected
-        return;
-    };
-
-    for GamepadEvent(id, kind) in gamepad_evr.iter() {
-        if id.0 != gamepad.0 {
-            // event not from our gamepad
-            continue;
-        }
-
-        use GamepadEventType::{AxisChanged, ButtonChanged};
-
-        match kind {
-            AxisChanged(GamepadAxisType::RightStickX, x) => {
-                // Right Stick moved (X)
-            }
-            AxisChanged(GamepadAxisType::RightStickY, y) => {
-                // Right Stick moved (Y)
-            }
-            ButtonChanged(GamepadButtonType::DPadDown, val) => {
-                // buttons are also reported as analog, so use a threshold
-                if *val > 0.5 {
-                    // button pressed
-                }
-            }
-            _ => {} // don't care about other inputs
-        }
-    }
-}
- */

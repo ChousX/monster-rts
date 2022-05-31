@@ -21,7 +21,9 @@ fn main(){
             cursor_locked: false,
             cursor_visible: false,
             resizable: false,
+            present_mode: bevy::window::PresentMode::Fifo,
             mode: WindowMode::BorderlessFullscreen,
+            
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)

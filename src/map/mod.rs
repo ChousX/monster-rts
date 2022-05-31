@@ -36,7 +36,7 @@ pub struct MyMapSettings{
 impl Default for MyMapSettings{
     fn default() -> Self {
         Self{
-            map_size: MapSize(10, 10),
+            map_size: MapSize(5, 10),
             seed: 0,
         }
     }
