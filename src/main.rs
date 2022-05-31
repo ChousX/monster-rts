@@ -1,6 +1,4 @@
-use bevy::{prelude::*, window::WindowMode, app::StartupStage};
-
-
+use bevy::{prelude::*, window::{WindowMode, PresentMode}};
 mod debug;
 mod share;
 mod mob;
@@ -21,9 +19,8 @@ fn main(){
             cursor_locked: false,
             cursor_visible: false,
             resizable: false,
-            present_mode: bevy::window::PresentMode::Fifo,
+            present_mode: PresentMode::Fifo,
             mode: WindowMode::BorderlessFullscreen,
-            
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
