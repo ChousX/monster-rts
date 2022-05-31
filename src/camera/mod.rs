@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use crate::share::GameState;
 mod movment;
 pub use movment::CameraMoveEvent;
-
+pub struct UICamera(pub Entity);
 pub struct CameraPlugin;
 impl Plugin for CameraPlugin{
     fn build(&self, app: &mut App) {
@@ -17,7 +17,8 @@ impl Plugin for CameraPlugin{
 }
 
 pub fn init_ui_camera(mut commands: Commands){
-    commands.spawn_bundle(UiCameraBundle::default());
+    let id = commands.spawn_bundle(UiCameraBundle::default()).id();
+    commands.insert_resource(UICamera(id));
 }
 
 pub fn add_camera(mut commands: Commands){
