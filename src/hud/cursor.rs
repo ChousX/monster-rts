@@ -1,5 +1,6 @@
 use bevy::{prelude::*, transform};
 use crate::{share::{AssetChecker, paths::{GAME_CURSOR, MENU_CURSOR}}, controls::RightStickEvent, camera::UICamera};
+//TODO: fix the cursor being under the buttons
 
 pub struct CursorsHandle{
     game_handle: Handle<Image>,

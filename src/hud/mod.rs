@@ -12,6 +12,9 @@ impl Plugin for HudPlugin{
             .add_system_set(SystemSet::on_update(GameState::MainMenu).with_system(cursor::move_cursor_mouse))
             .add_system_set(SystemSet::on_update(GameState::MainGame).with_system(cursor::move_cursor_mouse))
             .add_system_set(SystemSet::on_update(GameState::GameMenu).with_system(cursor::move_cursor_mouse))
+            .add_system_set(SystemSet::on_update(GameState::MainMenu).with_system(cursor::move_cursor_gamepad))
+            //TODO: Fix: "move_cursor_gamepad" Not working in the menues
+            .add_system_set(SystemSet::on_update(GameState::GameMenu).with_system(cursor::move_cursor_gamepad))
             .add_system_set(SystemSet::on_update(GameState::MainGame).with_system(cursor::move_cursor_gamepad))
             ;
     }

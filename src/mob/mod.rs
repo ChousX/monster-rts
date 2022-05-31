@@ -5,3 +5,6 @@ impl Plugin for MobPlugin{
         
     }
 }
+//TODO: construct sprites for mobs I am thinking compositing later on for now just a square will do  
+//TODO: Spawn mobs and attach sprites
+//TODO: Mob minimum movement logic can only walk on tiles

@@ -87,7 +87,7 @@ pub fn start_up_map(
         texture_index: 0,
         ..Default::default()
     }.into());
-
+    //TODO: Move the tile setting stuff to another function
     let mut noise = OpenSimplex::new();
     noise.set_seed(map_settings.seed);
 
