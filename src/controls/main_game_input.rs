@@ -129,7 +129,6 @@ pub fn gamepad_input(
     let axis_ry = GamepadAxis(gamepad, GamepadAxisType::RightStickY);
 
     if let (Some(x), Some(y)) = (axes.get(axis_rx), axes.get(axis_ry)){
-        println!("{}|{}", x, y);
         // combine X and Y into one vector
         let right_stick_pos = Vec2::new(x, y);
         right_stick_event.send(RightStickEvent(right_stick_pos));

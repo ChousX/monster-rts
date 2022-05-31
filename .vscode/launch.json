@@ -41,6 +41,27 @@
             },
             "args": [],
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'breakout'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=monster-rts",
+                    "--package=bevy"
+                ],
+                "filter": {
+                    "name": "monster-rts",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "CARGO_MANIFEST_DIR": "${workspaceFolder}",
+            }
         }
     ]
 }

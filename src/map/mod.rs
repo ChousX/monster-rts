@@ -65,7 +65,7 @@ pub fn start_up_map(
     mut map_query: MapQuery,
     map_settings: Res<MyMapSettings>
 ){
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    // commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
     //making a new entity to store map stuff
     let map_entity = commands.spawn().id();

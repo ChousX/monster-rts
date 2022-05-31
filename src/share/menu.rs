@@ -24,6 +24,7 @@ pub trait Menu: Component + Copy{
                 size: self.size(None, None),
                 margin: Rect::all(Val::Auto),
                 align_items: AlignItems::Center,
+                
                 ..Default::default()
             },
             color: NORMAL_BUTTON.into(),

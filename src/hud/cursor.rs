@@ -1,8 +1,9 @@
 use bevy::{prelude::*, transform};
-use crate::{share::{AssetChecker, paths::CURSOR}, controls::RightStickEvent, camera::UICamera};
+use crate::{share::{AssetChecker, paths::{GAME_CURSOR, MENU_CURSOR}}, controls::RightStickEvent, camera::UICamera};
 
 pub struct CursorsHandle{
-    handle: Handle<Image>
+    game_handle: Handle<Image>,
+    menu_handle: Handle<Image>,
 }
 
 
@@ -14,35 +15,68 @@ pub fn load_cursors(
     assets_server: Res<AssetServer>,
     mut checker: ResMut<AssetChecker>
 ){
-    let handle: Handle<Image> = assets_server.load(CURSOR);
-    checker.0.push(handle.clone_untyped());
-    commands.insert_resource(CursorsHandle{handle});
+    let menu_handle: Handle<Image> = assets_server.load(MENU_CURSOR);
+    let game_handle: Handle<Image> = assets_server.load(GAME_CURSOR);
+    checker.0.push(menu_handle.clone_untyped());
+    checker.0.push(game_handle.clone_untyped());
+    commands.insert_resource(CursorsHandle{game_handle, menu_handle});
 }
 
-pub fn init_cursor(
+pub fn init_game_cursor(
     mut commands: Commands,
     cursors: Res<CursorsHandle>,
     ui_camera: Res<UICamera>
 ){
     let child = commands.spawn_bundle(SpriteBundle{
-        texture: cursors.handle.clone(),
+        texture: cursors.game_handle.clone(),
         transform: Transform::from_translation(Vec3::splat(0.0)),
         ..Default::default()
     }).insert(Cursor{}).id();
     commands.entity(ui_camera.0).add_child(child);
 }
 
+pub fn init_menu_cursor(
+    mut commands: Commands,
+    cursors: Res<CursorsHandle>,
+    ui_camera: Res<UICamera>
+){
+    let child = commands.spawn_bundle(SpriteBundle{
+        texture: cursors.menu_handle.clone(),
+        transform: Transform::from_translation(Vec3::splat(0.0)),
+        ..Default::default()
+    }).insert(Cursor{}).id();
+    commands.entity(ui_camera.0).add_child(child);
+}
+
+pub fn remove_menu_cursor(
+    mut commands: Commands,
+    mut cursor: Query<(Entity, &Cursor)>
+){
+    for (entity, _) in cursor.iter(){
+        commands.entity(entity).despawn_descendants();
+        commands.entity(entity).despawn();
+    }
+}
+
 pub fn move_cursor_mouse(
     mut cursor_quere: Query<(&Cursor, &mut Transform)>,
     mut cursor_evr: EventReader<CursorMoved>,
+    window: Res<Windows>,
 ){
-    let (_, mut transform) = cursor_quere.single_mut();
+    let offset = {
+        let window = window.get_primary().unwrap();
+        (window.width() * 0.5, window.height() * 0.5)
+    };
 
-    for  last_pos in  cursor_evr.iter(){
-        println!("{}|{}", last_pos.position.x, last_pos.position.y);
-        transform.translation.x = last_pos.position.x;
-        transform.translation.y = last_pos.position.y;
+    for (_, mut transform) in cursor_quere.iter_mut(){
+        for  last_pos in  cursor_evr.iter(){
+            transform.translation.x = last_pos.position.x - offset.0;
+            transform.translation.y = last_pos.position.y - offset.1;
+        }
     }
+
+
+
 }
 
 pub fn move_cursor_gamepad(

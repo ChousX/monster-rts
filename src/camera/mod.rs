@@ -9,8 +9,8 @@ impl Plugin for CameraPlugin{
         app
             .add_event::<CameraMoveEvent>()
             .add_startup_system(init_ui_camera)
-            .add_system_set(SystemSet::on_enter(GameState::MainGame).with_system(add_camera).label("camra"))
-            .add_system_set(SystemSet::on_update(GameState::MainGame).with_system(movment::move_camera).after("camra"))
+            .add_startup_system(add_camera)
+            .add_system_set(SystemSet::on_update(GameState::MainGame).with_system(movment::move_camera))
             .add_system_set(SystemSet::on_update(GameState::MainGame).with_system(movment::move_camera_gamepad))
             ;
     }
