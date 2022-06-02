@@ -4,6 +4,7 @@ pub struct CameraMoveEvent{
     pub inputs: [bool; 6]
 }
 
+//TODO: Think about making moving continues
 pub fn move_camera(
     mut query: Query<(&mut Transform, &mut OrthographicProjection), With<Camera>>, 
     mut move_event: EventReader<CameraMoveEvent>,

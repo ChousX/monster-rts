@@ -36,7 +36,7 @@ pub struct MyMapSettings{
 impl Default for MyMapSettings{
     fn default() -> Self {
         Self{
-            map_size: MapSize(5, 10),
+            map_size: MapSize(3, 3),
             seed: 0,
         }
     }
@@ -117,6 +117,6 @@ pub fn start_up_map(
     commands
         .entity(map_entity)
         .insert(map)
-        .insert(Transform::from_xyz(-1024.0, 0.0, 0.0))
+        .insert(Transform::from_xyz(0.0, 0.0, 0.0))
         .insert(GlobalTransform::default());
 }
