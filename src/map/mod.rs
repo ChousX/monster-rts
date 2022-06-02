@@ -36,7 +36,7 @@ pub struct MyMapSettings{
 impl Default for MyMapSettings{
     fn default() -> Self {
         Self{
-            map_size: MapSize(3, 3),
+            map_size: MapSize(5, 5),
             seed: 0,
         }
     }
@@ -53,8 +53,6 @@ pub fn pre_start_up(
     let un_ref = handle.clone_untyped();
     checker.0.push(un_ref);
 
-
-
     commands.insert_resource(MyMapSettings::default());
     commands.insert_resource(MapTexterHandle(handle));
 }
@@ -65,8 +63,6 @@ pub fn start_up_map(
     mut map_query: MapQuery,
     map_settings: Res<MyMapSettings>
 ){
-    // commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-
     //making a new entity to store map stuff
     let map_entity = commands.spawn().id();
     let mut map = Map::new(0u16, map_entity);

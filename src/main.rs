@@ -35,6 +35,7 @@ fn main(){
         .add_plugin(map::MapPlugin)
         .add_plugin(controls::ControlsPlugin)
         .add_plugin(hud::HudPlugin)
+        .add_plugin(mob::MobPlugin)
         .run();
 }
 

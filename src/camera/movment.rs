@@ -66,4 +66,3 @@ pub fn move_camera_gamepad(
         }
     }
 }
-//TODO: set up a bounding box around the rendered map preventing from leaving the map space 
