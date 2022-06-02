@@ -21,6 +21,4 @@ pub enum GamepadButtonType {
     DPadRight,
 }
 */
-pub struct GamepadBindings{
-    
-}
+pub struct GamepadBindings {}

@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub enum GameState{
+pub enum GameState {
     Pre,
     MainMenu,
     Settings,
