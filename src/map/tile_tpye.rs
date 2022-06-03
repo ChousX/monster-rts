@@ -2,24 +2,24 @@ use bevy::prelude::Component;
 
 #[derive(Component)]
 pub enum TileType {
-    Stone,
     Grass,
     Water,
+    Swamp,
+    Lava,
+    Stone,
     Dirt,
-    Mud,
-    Sand,
 }
 
 impl From<u16> for TileType {
     fn from(input: u16) -> Self {
         use TileType::*;
         match input {
-            0 => Stone,
-            1 => Grass,
-            2 => Water,
-            3 => Dirt,
-            4 => Mud,
-            5 => Sand,
+            0 => Grass,
+            1 => Water,
+            2 => Swamp,
+            3 => Lava,
+            4 => Stone,
+            5 => Dirt,
             _ => unreachable!(),
         }
     }

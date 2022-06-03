@@ -11,7 +11,7 @@ pub struct Sight {
     rang: f32,
 }
 
-pub fn vision(
+pub fn mob_vision(
     mob: Query<(&Sight, &Transform, Entity), With<Mob>>,
     output: EventWriter<MobPerseptionEvent>,
 ) {
@@ -23,4 +23,19 @@ pub fn vision(
         //and save that data in PerseptionData
         //lets start off with getting the tiles in a box shape Then work on making it a circle
     }
+}
+
+#[derive(Default, Component)]
+pub struct Hearing{
+    
+}
+
+pub fn mob_listening(
+    mob: Query<(&Hearing, &Transform, Entity), With<Mob>>,
+    output: EventWriter<MobPerseptionEvent>,
+){
+    for (hearing, transform, entity) in mob.iter() {
+        let pos = transform.translation;
+    }
+
 }

@@ -21,7 +21,7 @@ impl Plugin for MobPlugin {
             .add_system_set(
                 SystemSet::on_update(GameState::MainGame)
                     .label("Perseption")
-                    .with_system(perseptions::vision),
+                    .with_system(perseptions::mob_vision),
             )
             .add_system_set(
                 SystemSet::on_update(GameState::MainGame)
