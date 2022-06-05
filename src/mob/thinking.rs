@@ -5,12 +5,14 @@ use crate::{
         actions::*
     }
 };
+use std::collections::VecDeque;
+
+pub struct Memory(pub VecDeque<VecDeque<Option<TileType>>>);
 
 pub fn basic
 (
     percept: EventReader<MobPerseptionEvent>,
-    mobs: Query<()>,
-
+    memory: Query<Memory>,
 ){
 
 
