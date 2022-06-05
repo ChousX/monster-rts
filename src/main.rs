@@ -2,6 +2,8 @@ use bevy::{
     prelude::*,
     window::{PresentMode, WindowMode},
 };
+use bevy::log::LogPlugin;
+
 mod camera;
 mod controls;
 mod debug;
@@ -15,7 +17,8 @@ mod share;
 use share::GameState;
 
 fn main() {
-    App::new()
+    let mut app = App::new();
+    app
         .insert_resource(WindowDescriptor {
             width: share::RESOLUTION.0,
             height: share::RESOLUTION.1,
@@ -26,6 +29,7 @@ fn main() {
             mode: WindowMode::BorderlessFullscreen,
             ..Default::default()
         })
+        //.add_plugins_with(DefaultPlugins, |plugins| plugins.disable::<bevy::log::LogPlugin>())
         .add_plugins(DefaultPlugins)
         .add_system_set(
             SystemSet::on_enter(GameState::GameLoad).with_system(share::asset_load_checker),
@@ -36,12 +40,15 @@ fn main() {
         .add_state(GameState::Pre)
         .add_plugin(camera::CameraPlugin)
         .add_plugin(main_menu::MainMenuPlugin)
-        .add_plugin(debug::DebugPlugin)
         .add_plugin(map::MapPlugin)
         .add_plugin(controls::ControlsPlugin)
         .add_plugin(hud::HudPlugin)
         .add_plugin(mob::MobPlugin)
-        .run();
+        .add_plugin(debug::DebugPlugin);
+        //bevy_mod_debugdump::print_render_schedule(&mut app);
+        app.run();
+        
+        
 }
 
 fn move_to_menu(mut state: ResMut<State<GameState>>) {

@@ -4,13 +4,14 @@ use bevy_ecs_tilemap::prelude::*;
 mod texture;
 mod tile_tpye;
 mod seed;
-use crate::map::tile_tpye::TileType;
+pub use crate::map::tile_tpye::TileType;
 use crate::share::{range_mapping, AssetChecker, GameState};
 use rand::{prelude::*, Rng, SeedableRng};
 
 
 pub const TILE_SIZE: (f32, f32) = (64.0, 32.0);
 pub const CHUNK_SIZE: (u32, u32) = (16, 32);
+
 
 #[derive(Default)]
 pub struct MapTexterHandle(pub Handle<Image>);
