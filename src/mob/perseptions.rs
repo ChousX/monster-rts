@@ -13,11 +13,6 @@ pub struct MobPerseptionEvent(pub VecDeque<VecDeque<PerseptionData>>);
 pub struct Sight {
     rang: u32,
 }
-        //TODO
-        //then we need to get the what tile we are on
-        //then we need to get every tile with in a range
-        //and save that data in PerseptionData
-        //lets start off with getting the tiles in a box shape Then work on making it a circle
 pub fn mob_vision(
     mob: Query<(&Sight, &Transform, Entity), With<Mob>>,
     tiles: Query<&TileType>,
@@ -58,13 +53,15 @@ pub fn mob_vision(
                 }
             )
         };
-        let mut seen = VecDeque::with_capacity((y_2 - y_1) as usize);
+        let mut seen: VecDeque<VecDeque<Option<TileType>>> = VecDeque::with_capacity((y_2 - y_1) as usize);
         for y in y_1..y_2{
-            let mut row_seen = VecDeque::with_capacity((x_2 - x_1) as usize);
+            let mut row_seen: VecDeque<Option<TileType>> = VecDeque::with_capacity((x_2 - x_1) as usize);
             for x in x_1..x_2{
                 if let Ok(entity) = map.get_tile_entity(TilePos(x, y), 0, 0){
                     if let Ok(tile_type) = tiles.get(entity){
-                        
+                        row_seen.push_back(Some(*tile_type));
+                    } else {
+                        row_seen.push_back(None);
                     }
                 }
             }
